@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Kaffe - Menu')}"></head>
+<body class="bg-amber-50 min-h-screen font-sans text-gray-800">
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="container mx-auto px-4 py-12">
+        <h1 class="text-4xl font-bold text-amber-900 text-center mb-10">Our Coffee Menu</h1>
+
+        <!-- Categories -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+            <button class="bg-amber-800 text-white px-6 py-2 rounded-full hover:bg-amber-900 transition">All</button>
+            <button class="bg-white text-amber-900 border border-amber-800 px-6 py-2 rounded-full hover:bg-amber-100 transition">Espresso</button>
+            <button class="bg-white text-amber-900 border border-amber-800 px-6 py-2 rounded-full hover:bg-amber-100 transition">Cold Brew</button>
+            <button class="bg-white text-amber-900 border border-amber-800 px-6 py-2 rounded-full hover:bg-amber-100 transition">Pour Over</button>
+        </div>
+
+        <!-- Menu Items Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Item 1 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="h-48 bg-amber-200 flex items-center justify-center text-5xl">☕</div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-amber-900 mb-2">Classic Espresso</h3>
+                    <p class="text-gray-600 mb-4">Rich, intense, and full-bodied. The perfect morning kickstarter.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$3.50</span>
+                        <button class="text-amber-600 hover:text-amber-800 font-semibold">Order Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="h-48 bg-amber-200 flex items-center justify-center text-5xl">🧊☕</div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-amber-900 mb-2">Signature Cold Brew</h3>
+                    <p class="text-gray-600 mb-4">Steeped for 18 hours for a smooth, refreshing, and low-acidity finish.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$4.50</span>
+                        <button class="text-amber-600 hover:text-amber-800 font-semibold">Order Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="h-48 bg-amber-200 flex items-center justify-center text-5xl">🥛☕</div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-amber-900 mb-2">Vanilla Latte</h3>
+                    <p class="text-gray-600 mb-4">Espresso with steamed milk and our house-made vanilla syrup.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$4.75</span>
+                        <button class="text-amber-600 hover:text-amber-800 font-semibold">Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

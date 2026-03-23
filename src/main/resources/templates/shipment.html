@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Kaffe - Shipment & Delivery')}"></head>
+<body class="bg-amber-50 min-h-screen font-sans text-gray-800">
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="container mx-auto px-4 py-16 max-w-4xl">
+        <h1 class="text-4xl font-bold text-amber-900 text-center mb-8">Shipment Information</h1>
+
+        <div class="bg-white p-8 rounded-lg shadow-md text-lg leading-relaxed text-gray-700 space-y-8">
+            <section>
+                <h2 class="text-2xl font-bold text-amber-800 mb-3 border-b border-amber-200 pb-2">Delivery Times</h2>
+                <p>We process all orders within 24 hours of receiving them to guarantee maximum freshness.</p>
+                <ul class="list-disc ml-8 mt-2 space-y-1">
+                    <li>Standard Shipping: 3-5 business days</li>
+                    <li>Expedited Shipping: 2-3 business days</li>
+                    <li>Next Day Air: 1 business day (orders must be placed by 12 PM PST)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-amber-800 mb-3 border-b border-amber-200 pb-2">Rates</h2>
+                <p>We offer competitive shipping rates to make sure you get your coffee affordably.</p>
+                <ul class="list-disc ml-8 mt-2 space-y-1">
+                    <li>Standard: $4.99</li>
+                    <li>Expedited: $9.99</li>
+                    <li>Next Day Air: $24.99</li>
+                    <li class="font-bold text-amber-900">Free Standard Shipping on all orders over $50!</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold text-amber-800 mb-3 border-b border-amber-200 pb-2">Return Policy</h2>
+                <p>If you're not fully satisfied with your order, please contact our support team within 14 days of delivery. For safety reasons, we cannot accept returns on roasted coffee, but we will happily replace your order or issue a refund if something isn't right.</p>
+            </section>
+        </div>
+    </main>
+
+</body>
+</html>

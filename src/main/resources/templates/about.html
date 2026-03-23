@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Kaffe - About Us')}"></head>
+<body class="bg-amber-50 min-h-screen font-sans text-gray-800">
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="container mx-auto px-4 py-16 max-w-4xl">
+        <h1 class="text-4xl font-bold text-amber-900 text-center mb-8">About Kaffe</h1>
+
+        <div class="bg-white p-8 rounded-lg shadow-md text-lg leading-relaxed text-gray-700 space-y-6">
+            <p>
+                Welcome to <strong>Kaffe</strong>, where our passion for coffee meets a dedication to community and sustainability. Founded in 2023, we set out on a mission to bring the world's finest coffee beans right to your cup.
+            </p>
+            <p>
+                We believe that great coffee starts at the source. That's why we work directly with small-batch farmers across South America, Africa, and Asia. By ensuring fair compensation and ethical labor practices, we help support the communities that make our favorite morning ritual possible.
+            </p>
+            <p>
+                Our master roasters treat every batch with the utmost care, unlocking the unique flavor profiles hidden within each bean. Whether you prefer a bright and fruity light roast or a deep, chocolatey dark roast, Kaffe has something crafted just for you.
+            </p>
+            <div class="border-t border-amber-200 pt-6 mt-8 text-center">
+                <h3 class="text-2xl font-bold text-amber-900 mb-4">Visit Us</h3>
+                <p>123 Coffee Lane, Brewville, CA 90210</p>
+                <p>Monday - Friday: 7am - 6pm</p>
+                <p>Weekend: 8am - 5pm</p>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
