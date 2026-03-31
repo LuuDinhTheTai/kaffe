@@ -1,22 +1,43 @@
 package com.me.kaffe.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
+/**
+ * AuthResponse DTO
+ * Response object for authentication endpoints (login, register)
+ * Contains JWT token or error information
+ */
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 public class AuthResponse {
 
     private final boolean success;
     private final String token;
     private final String errorCode;
 
+    /**
+     * Create successful authentication response with JWT token
+     */
     public static AuthResponse success(String token) {
-        return new AuthResponse(true, token, null);
+        return AuthResponse.builder()
+                .success(true)
+                .token(token)
+                .errorCode(null)
+                .build();
     }
 
+    /**
+     * Create failed authentication response with error code
+     */
     public static AuthResponse failure(String errorCode) {
-        return new AuthResponse(false, null, errorCode);
+        return AuthResponse.builder()
+                .success(false)
+                .token(null)
+                .errorCode(errorCode)
+                .build();
     }
 }
 
