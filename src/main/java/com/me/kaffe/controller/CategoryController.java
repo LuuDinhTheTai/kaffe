@@ -2,54 +2,166 @@ package com.me.kaffe.controller;
 
 import com.me.kaffe.entity.Category;
 import com.me.kaffe.service.CategoryService;
+import com.me.kaffe.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/categories")
+/**
+ * CategoryController - Category Management Controller (MVC with Thymeleaf)
+ * Handles web UI endpoints for category management using Model-View-Controller pattern
+ */
+@Slf4j
+@Controller
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final ProductService productService;
 
+    /**
+     * GET /categories - Display all categories
+     * Shows category management page with list of all categories
+     */
     @GetMapping
-    public List<Category> getAll() {
-        return categoryService.findAll();
+    public String listCategories(Model model) {
+        log.info("Displaying category management page");
+        
+        List<Category> categories = categoryService.findAll();
+        Map<UUID, Long> productCounts = new HashMap<>();
+        for (Category category : categories) {
+            productCounts.put(category.getUniqueId(), productService.countByCategoryId(category.getUniqueId()));
+        }
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("productCounts", productCounts);
+        model.addAttribute("pageTitle", "Category Management");
+        model.addAttribute("totalCategories", categories.size());
+        return "categories";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Category> getById(@PathVariable UUID id) {
+    /**
+     * GET /categories/new - Display create category form
+     * Shows empty form for creating a new category
+     */
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        log.info("Displaying create category form");
+        
+        model.addAttribute("category", new Category());
+        model.addAttribute("pageTitle", "Create New Category");
+        model.addAttribute("isNew", true);
+        return "category-form";
+    }
+
+    /**
+     * GET /categories/{id}/edit - Display edit category form
+     * Shows form pre-populated with existing category data
+     */
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable UUID id, Model model) {
+        log.info("Displaying edit form for category: {}", id);
+        
         return categoryService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(category -> {
+                    model.addAttribute("category", category);
+                    model.addAttribute("pageTitle", "Edit Category");
+                    model.addAttribute("isNew", false);
+                    return "category-form";
+                })
+                .orElse("redirect:/categories?error=Category+not+found");
     }
 
+    /**
+     * POST /categories - Save category (create or update)
+     * Processes form submission and saves category to database
+     */
     @PostMapping
-    public Category create(@RequestBody Category category) {
-        return categoryService.save(category);
+    public String saveCategory(@ModelAttribute("category") Category category, Model model) {
+        log.info("Saving category: {}", category.getName());
+        
+        try {
+            // Validation
+            if (category.getName() == null || category.getName().trim().isEmpty()) {
+                log.warn("Validation failed: Category name is required");
+                model.addAttribute("category", category);
+                model.addAttribute("error", "Category name is required");
+                model.addAttribute("pageTitle", category.getUniqueId() == null ? "Create New Category" : "Edit Category");
+                model.addAttribute("isNew", category.getUniqueId() == null);
+                return "category-form";
+            }
+            
+            if (category.getName().length() > 100) {
+                log.warn("Validation failed: Category name too long");
+                model.addAttribute("category", category);
+                model.addAttribute("error", "Category name must not exceed 100 characters");
+                model.addAttribute("pageTitle", category.getUniqueId() == null ? "Create New Category" : "Edit Category");
+                model.addAttribute("isNew", category.getUniqueId() == null);
+                return "category-form";
+            }
+            
+            if (category.getDescription() != null && category.getDescription().length() > 500) {
+                log.warn("Validation failed: Description too long");
+                model.addAttribute("category", category);
+                model.addAttribute("error", "Description must not exceed 500 characters");
+                model.addAttribute("pageTitle", category.getUniqueId() == null ? "Create New Category" : "Edit Category");
+                model.addAttribute("isNew", category.getUniqueId() == null);
+                return "category-form";
+            }
+            
+            // Save category
+            categoryService.save(category);
+            
+            if (category.getUniqueId() == null) {
+                log.info("New category created successfully");
+            } else {
+                log.info("Category updated successfully: {}", category.getUniqueId());
+            }
+            
+            return "redirect:/categories?success=true";
+            
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("category", category);
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("pageTitle", category.getUniqueId() == null ? "Create New Category" : "Edit Category");
+            model.addAttribute("isNew", category.getUniqueId() == null);
+            return "category-form";
+        } catch (Exception e) {
+            log.error("Error saving category", e);
+            model.addAttribute("category", category);
+            model.addAttribute("error", "Failed to save category: " + e.getMessage());
+            model.addAttribute("pageTitle", category.getUniqueId() == null ? "Create New Category" : "Edit Category");
+            model.addAttribute("isNew", category.getUniqueId() == null);
+            return "category-form";
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Category> update(@PathVariable UUID id, @RequestBody Category category) {
-        return categoryService.findById(id)
-                .map(existing -> {
-                    category.setUniqueId(id);
-                    return ResponseEntity.ok(categoryService.save(category));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        return categoryService.findById(id)
-                .map(existing -> {
-                    categoryService.deleteById(id);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+    /**
+     * GET /categories/{id}/delete - Delete category
+     * Removes category from database and redirects to list
+     */
+    @GetMapping("/{id}/delete")
+    public String deleteCategory(@PathVariable UUID id) {
+        log.info("Deleting category: {}", id);
+        
+        try {
+            categoryService.deleteById(id);
+            log.info("Category deleted successfully");
+            return "redirect:/categories?success=true";
+        } catch (Exception e) {
+            log.warn("Failed to delete category {}: {}", id, e.getMessage());
+            String message = URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
+            return "redirect:/categories?error=" + message;
+        }
     }
 }

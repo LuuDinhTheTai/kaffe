@@ -29,8 +29,9 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/menu", "/about", "/shipment", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/products/**", "/categories/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/api/**").hasAnyRole("ADMIN", "CUSTOMER", "EMPLOYEE")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
                 .logout(logout -> logout.disable())

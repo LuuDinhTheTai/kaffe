@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Kaffe - Product Form')}"></head>
+<body class="bg-amber-50 min-h-screen text-gray-800">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container mx-auto max-w-3xl px-4 py-10">
+    <div class="mb-6 flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-amber-900" th:text="${pageTitle}">Product Form</h1>
+        <a href="/products" class="text-sm font-semibold text-amber-800 hover:underline">Back to products</a>
+    </div>
+
+    <div th:if="${error}" class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800" th:text="${error}"></div>
+
+    <form th:action="@{/products}" th:object="${productForm}" method="post" class="space-y-5 rounded-xl border border-amber-200 bg-white p-6 shadow-sm">
+        <input type="hidden" th:field="*{uniqueId}" />
+
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-amber-900">Category</label>
+            <select th:field="*{categoryId}" required class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:border-amber-600 focus:outline-none">
+                <option value="">Select a category</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.uniqueId}"
+                        th:text="${category.name}"></option>
+            </select>
+        </div>
+
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-amber-900">Product Name</label>
+            <input type="text" th:field="*{name}" required maxlength="120" class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:border-amber-600 focus:outline-none" placeholder="e.g. Caramel Latte" />
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-2">
+            <div>
+                <label class="mb-1 block text-sm font-semibold text-amber-900">SKU</label>
+                <input type="text" th:field="*{sku}" required maxlength="64" class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:border-amber-600 focus:outline-none" placeholder="e.g. PROD-LATTE-001" />
+            </div>
+            <div>
+                <label class="mb-1 block text-sm font-semibold text-amber-900">Size</label>
+                <input type="text" th:field="*{size}" maxlength="32" class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:border-amber-600 focus:outline-none" placeholder="Small / Medium / Large" />
+            </div>
+        </div>
+
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-amber-900">Image URL</label>
+            <input type="url" th:field="*{image}" class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:border-amber-600 focus:outline-none" placeholder="https://..." />
+        </div>
+
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-amber-900">Description</label>
+            <textarea th:field="*{description}" rows="4" maxlength="1000" class="w-full rounded-lg border border-amber-200 px-3 py-2 focus:border-amber-600 focus:outline-none" placeholder="Describe this product..."></textarea>
+        </div>
+
+        <div class="flex items-center gap-3 pt-2">
+            <button type="submit" class="rounded-lg bg-amber-800 px-5 py-2.5 font-semibold text-white hover:bg-amber-900" th:text="${isNew} ? 'Create Product' : 'Update Product'"></button>
+            <a href="/products" class="rounded-lg border border-amber-300 px-5 py-2.5 font-semibold text-amber-800 hover:bg-amber-100">Cancel</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>
+

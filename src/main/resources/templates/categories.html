@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Kaffe - Category Management')}"></head>
+<body class="bg-amber-50 min-h-screen text-gray-800">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container mx-auto px-4 py-10">
+    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <h1 class="text-3xl font-bold text-amber-900">Category Management</h1>
+        <a href="/categories/new"
+           class="inline-flex items-center justify-center rounded-lg bg-amber-800 px-5 py-2.5 font-semibold text-white hover:bg-amber-900">
+            + Create Category
+        </a>
+    </div>
+
+    <div th:if="${param.error}" class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
+        <strong>Error:</strong> <span th:text="${param.error}"></span>
+    </div>
+
+    <div th:if="${param.success}" class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800">
+        <strong>Success:</strong> Operation completed successfully.
+    </div>
+
+    <div th:if="${!categories.isEmpty()}" class="space-y-8">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div th:each="category : ${categories}" class="rounded-xl border border-amber-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <h2 class="mb-2 text-xl font-bold text-amber-900" th:text="${category.name}"></h2>
+
+                <p class="mb-4 min-h-10 text-sm text-gray-600" th:text="${category.description}">No description</p>
+
+                <p class="mb-4 text-xs text-gray-500">
+                    <strong>Products:</strong> <span th:text="${productCounts[category.uniqueId]}">0</span>
+                </p>
+
+                <div class="flex gap-2">
+                    <a th:href="@{/categories/{id}/edit(id=${category.uniqueId})}"
+                       class="flex-1 rounded-md bg-amber-700 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-amber-800">Edit</a>
+                    <a th:href="@{/categories/{id}/delete(id=${category.uniqueId})}"
+                       onclick="return confirm('Are you sure?')"
+                       class="flex-1 rounded-md bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-red-700">Delete</a>
+                </div>
+            </div>
+        </div>
+
+        <details class="rounded-xl border border-amber-200 bg-white p-4 shadow-sm">
+            <summary class="cursor-pointer text-sm font-semibold text-amber-800">Table View</summary>
+            <div class="mt-4 overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-amber-900 text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left">Category Name</th>
+                        <th class="px-4 py-3 text-left">Description</th>
+                        <th class="px-4 py-3 text-left">Products</th>
+                        <th class="px-4 py-3 text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}" class="border-b last:border-b-0 hover:bg-amber-50/60">
+                        <td class="px-4 py-3 font-medium" th:text="${category.name}"></td>
+                        <td class="px-4 py-3" th:text="${category.description}">-</td>
+                        <td class="px-4 py-3" th:text="${productCounts[category.uniqueId]}">0</td>
+                        <td class="px-4 py-3">
+                            <div class="flex justify-end gap-2">
+                                <a th:href="@{/categories/{id}/edit(id=${category.uniqueId})}"
+                                   class="rounded-md bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800">Edit</a>
+                                <a th:href="@{/categories/{id}/delete(id=${category.uniqueId})}"
+                                   onclick="return confirm('Are you sure?')"
+                                   class="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </div>
+
+    <div th:if="${categories.isEmpty()}" class="rounded-xl border border-amber-200 bg-white p-12 text-center shadow-sm">
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-2xl">📭</div>
+        <h2 class="mb-2 text-2xl font-bold text-amber-900">No Categories Yet</h2>
+        <p class="mb-5 text-sm text-gray-600">Create your first category to get started.</p>
+        <a href="/categories/new"
+           class="inline-flex items-center justify-center rounded-lg bg-amber-800 px-5 py-2.5 font-semibold text-white hover:bg-amber-900">
+            Create First Category
+        </a>
+    </div>
+</main>
+</body>
+</html>
