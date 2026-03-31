@@ -48,4 +48,16 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Order> orders;
+
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
+
+    public boolean isCustomer() {
+        return this.role == Role.CUSTOMER;
+    }
+
+    public boolean isEmployee() {
+        return this.role == Role.EMPLOYEE;
+    }
 }

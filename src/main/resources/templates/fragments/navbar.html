@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 </head>
 <body>
@@ -11,11 +12,32 @@
         </a>
 
         <!-- Menu Items -->
-        <div class="hidden md:flex space-x-8 text-white">
-            <a href="/" class="hover:text-amber-200 transition-colors">Home</a>
-            <a href="/menu" class="hover:text-amber-200 transition-colors">Menu</a>
-            <a href="/about" class="hover:text-amber-200 transition-colors">About</a>
-            <a href="/shipment" class="hover:text-amber-200 transition-colors">Shipment</a>
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="/" class="text-white hover:text-amber-200 transition-colors">Home</a>
+            <a href="/menu" class="text-white hover:text-amber-200 transition-colors">Menu</a>
+            <a href="/about" class="text-white hover:text-amber-200 transition-colors">About</a>
+            <a href="/shipment" class="text-white hover:text-amber-200 transition-colors">Shipment</a>
+
+            <!-- Authenticated: show username + logout -->
+            <div sec:authorize="isAuthenticated()" class="flex items-center space-x-4 ml-4 pl-4 border-l border-amber-700">
+                <span class="text-amber-200 font-medium" sec:authentication="name">User</span>
+                <a href="/logout"
+                   class="bg-amber-700 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-1.5 rounded-full transition-colors">
+                    Logout
+                </a>
+            </div>
+
+            <!-- Anonymous: show login + register -->
+            <div sec:authorize="isAnonymous()" class="flex items-center space-x-3 ml-4 pl-4 border-l border-amber-700">
+                <a href="/login"
+                   class="bg-white hover:bg-amber-100 text-amber-900 text-sm font-semibold px-5 py-1.5 rounded-full transition-colors">
+                    Login
+                </a>
+                <a href="/register"
+                   class="bg-amber-700 hover:bg-amber-600 text-white text-sm font-semibold px-5 py-1.5 rounded-full transition-colors">
+                    Register
+                </a>
+            </div>
         </div>
     </div>
 </nav>
