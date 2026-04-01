@@ -28,7 +28,7 @@ public class ProductController {
     @GetMapping
     public String listProducts(Model model) {
         model.addAttribute("products", productService.findAll());
-        model.addAttribute("pageTitle", "Product Management");
+        model.addAttribute("pageTitle", "Products");
         return "products";
     }
 
@@ -77,6 +77,17 @@ public class ProductController {
             log.error("Failed to delete product {}", id, e);
             return "redirect:/products?error=Failed+to+delete+product";
         }
+    }
+
+    @GetMapping("/{id}")
+    public String productDetail(@PathVariable UUID id, Model model) {
+        return productService.findById(id)
+                .map(product -> {
+                    model.addAttribute("product", product);
+                    model.addAttribute("pageTitle", product.getName());
+                    return "product";
+                })
+                .orElse("redirect:/products?error=Product+not+found");
     }
 
     private ProductFormRequest toForm(Product product) {

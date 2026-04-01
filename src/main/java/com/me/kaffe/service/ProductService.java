@@ -82,6 +82,11 @@ public class ProductService {
         return productRepository.countByCategory_UniqueId(categoryId);
     }
 
+    @Transactional(readOnly = true)
+    public List<Product> findByCategoryId(UUID categoryId) {
+        return productRepository.findByCategory_UniqueId(categoryId);
+    }
+
     private boolean isSkuTakenByAnother(String sku, UUID currentId) {
         return productRepository.findBySkuIgnoreCase(sku.trim())
                 .map(existing -> currentId == null || !existing.getUniqueId().equals(currentId))

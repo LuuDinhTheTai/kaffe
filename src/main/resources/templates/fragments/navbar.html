@@ -14,10 +14,28 @@
         <!-- Menu Items -->
         <div class="hidden md:flex items-center space-x-8">
             <a href="/" class="text-white hover:text-amber-200 transition-colors">Home</a>
-            <a href="/products" class="text-white hover:text-amber-200 transition-colors">Products</a>
-            <a href="/categories" class="text-white hover:text-amber-200 transition-colors">Menu</a>
             <a href="/about" class="text-white hover:text-amber-200 transition-colors">About</a>
             <a href="/shipment" class="text-white hover:text-amber-200 transition-colors">Shipment</a>
+
+            <div sec:authorize="isAuthenticated()" class="flex items-center space-x-8">
+
+                <!-- Categories Dropdown -->
+                <div class="group relative">
+                    <button type="button" class="text-white hover:text-amber-200 transition-colors inline-flex items-center gap-1">
+                        Categories
+                        <span class="text-xs">▼</span>
+                    </button>
+                    <div class="invisible absolute right-0 z-20 mt-2 w-64 rounded-lg border border-amber-200 bg-white py-2 text-sm text-gray-800 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:opacity-100">
+                        <a href="/categories" class="block px-4 py-2 font-semibold text-amber-900 hover:bg-amber-50">All Categories</a>
+                        <div class="my-1 border-t border-amber-100"></div>
+                        <a th:if="${#lists.isEmpty(navbarCategories)}" href="/categories" class="block px-4 py-2 text-gray-500">No categories</a>
+                        <a th:each="category : ${navbarCategories}"
+                           th:href="@{/categories/{id}(id=${category.uniqueId})}"
+                           th:text="${category.name}"
+                           class="block px-4 py-2 hover:bg-amber-50"></a>
+                    </div>
+                </div>
+            </div>
 
             <!-- Authenticated: show username + logout -->
             <div sec:authorize="isAuthenticated()" class="flex items-center space-x-4 ml-4 pl-4 border-l border-amber-700">

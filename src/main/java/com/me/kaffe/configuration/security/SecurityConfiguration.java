@@ -3,6 +3,7 @@ package com.me.kaffe.configuration.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +30,10 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/menu", "/about", "/shipment", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/products/**", "/categories/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/categories", "/products").hasRole("ADMIN")
+                        .requestMatchers("/categories/new", "/categories/*/edit", "/categories/*/delete").hasRole("ADMIN")
+                        .requestMatchers("/products/new", "/products/*/edit", "/products/*/delete").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/categories", "/categories/*", "/products", "/products/*").hasAnyRole("ADMIN", "CUSTOMER", "EMPLOYEE")
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "CUSTOMER", "EMPLOYEE")
                         .anyRequest().authenticated()
                 )

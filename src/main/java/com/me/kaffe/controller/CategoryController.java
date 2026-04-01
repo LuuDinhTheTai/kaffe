@@ -35,8 +35,8 @@ public class CategoryController {
      */
     @GetMapping
     public String listCategories(Model model) {
-        log.info("Displaying category management page");
-        
+        log.info("Displaying categories page");
+
         List<Category> categories = categoryService.findAll();
         Map<UUID, Long> productCounts = new HashMap<>();
         for (Category category : categories) {
@@ -45,7 +45,7 @@ public class CategoryController {
 
         model.addAttribute("categories", categories);
         model.addAttribute("productCounts", productCounts);
-        model.addAttribute("pageTitle", "Category Management");
+        model.addAttribute("pageTitle", "Categories");
         model.addAttribute("totalCategories", categories.size());
         return "categories";
     }
@@ -57,7 +57,7 @@ public class CategoryController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         log.info("Displaying create category form");
-        
+
         model.addAttribute("category", new Category());
         model.addAttribute("pageTitle", "Create New Category");
         model.addAttribute("isNew", true);
@@ -71,7 +71,7 @@ public class CategoryController {
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable UUID id, Model model) {
         log.info("Displaying edit form for category: {}", id);
-        
+
         return categoryService.findById(id)
                 .map(category -> {
                     model.addAttribute("category", category);
@@ -89,7 +89,7 @@ public class CategoryController {
     @PostMapping
     public String saveCategory(@ModelAttribute("category") Category category, Model model) {
         log.info("Saving category: {}", category.getName());
-        
+
         try {
             // Validation
             if (category.getName() == null || category.getName().trim().isEmpty()) {
@@ -100,7 +100,7 @@ public class CategoryController {
                 model.addAttribute("isNew", category.getUniqueId() == null);
                 return "category-form";
             }
-            
+
             if (category.getName().length() > 100) {
                 log.warn("Validation failed: Category name too long");
                 model.addAttribute("category", category);
@@ -109,7 +109,7 @@ public class CategoryController {
                 model.addAttribute("isNew", category.getUniqueId() == null);
                 return "category-form";
             }
-            
+
             if (category.getDescription() != null && category.getDescription().length() > 500) {
                 log.warn("Validation failed: Description too long");
                 model.addAttribute("category", category);
@@ -118,18 +118,18 @@ public class CategoryController {
                 model.addAttribute("isNew", category.getUniqueId() == null);
                 return "category-form";
             }
-            
+
             // Save category
             categoryService.save(category);
-            
+
             if (category.getUniqueId() == null) {
                 log.info("New category created successfully");
             } else {
                 log.info("Category updated successfully: {}", category.getUniqueId());
             }
-            
+
             return "redirect:/categories?success=true";
-            
+
         } catch (IllegalArgumentException e) {
             model.addAttribute("category", category);
             model.addAttribute("error", e.getMessage());
@@ -153,7 +153,7 @@ public class CategoryController {
     @GetMapping("/{id}/delete")
     public String deleteCategory(@PathVariable UUID id) {
         log.info("Deleting category: {}", id);
-        
+
         try {
             categoryService.deleteById(id);
             log.info("Category deleted successfully");
@@ -163,5 +163,21 @@ public class CategoryController {
             String message = URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
             return "redirect:/categories?error=" + message;
         }
+    }
+
+    /**
+     * GET /categories/{id} - Display category details
+     * Shows category information and associated products
+     */
+    @GetMapping("/{id}")
+    public String categoryDetail(@PathVariable UUID id, Model model) {
+        return categoryService.findById(id)
+                .map(category -> {
+                    model.addAttribute("category", category);
+                    model.addAttribute("products", productService.findByCategoryId(id));
+                    model.addAttribute("pageTitle", category.getName());
+                    return "category";
+                })
+                .orElse("redirect:/categories?error=Category+not+found");
     }
 }

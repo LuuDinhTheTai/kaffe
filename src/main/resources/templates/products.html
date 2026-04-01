@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/head :: head('Kaffe - Product Management')}"></head>
 <body class="bg-amber-50 min-h-screen text-gray-800">
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -7,7 +8,7 @@
 <main class="container mx-auto px-4 py-10">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <h1 class="text-3xl font-bold text-amber-900">Product Management</h1>
-        <a href="/products/new" class="inline-flex items-center justify-center rounded-lg bg-amber-800 px-5 py-2.5 font-semibold text-white hover:bg-amber-900">
+        <a sec:authorize="hasRole('ADMIN')" href="/products/new" class="inline-flex items-center justify-center rounded-lg bg-amber-800 px-5 py-2.5 font-semibold text-white hover:bg-amber-900">
             + Add Product
         </a>
     </div>
@@ -46,8 +47,9 @@
                 </td>
                 <td class="px-4 py-3">
                     <div class="flex justify-end gap-2">
-                        <a th:href="@{/products/{id}/edit(id=${product.uniqueId})}" class="rounded-md bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800">Edit</a>
-                        <a th:href="@{/products/{id}/delete(id=${product.uniqueId})}" onclick="return confirm('Delete this product?')" class="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700">Delete</a>
+                        <a th:href="@{/products/{id}(id=${product.uniqueId})}" class="rounded-md border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-900 hover:bg-amber-100">View</a>
+                        <a sec:authorize="hasRole('ADMIN')" th:href="@{/products/{id}/edit(id=${product.uniqueId})}" class="rounded-md bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800">Edit</a>
+                        <a sec:authorize="hasRole('ADMIN')" th:href="@{/products/{id}/delete(id=${product.uniqueId})}" onclick="return confirm('Delete this product?')" class="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700">Delete</a>
                     </div>
                 </td>
             </tr>

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('Kaffe - Category Management')}"></head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Kaffe - Categories')}"></head>
 <body class="bg-amber-50 min-h-screen text-gray-800">
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container mx-auto px-4 py-10">
     <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 class="text-3xl font-bold text-amber-900">Category Management</h1>
-        <a href="/categories/new"
+        <h1 class="text-3xl font-bold text-amber-900">Categories</h1>
+        <a sec:authorize="hasRole('ADMIN')" href="/categories/new"
            class="inline-flex items-center justify-center rounded-lg bg-amber-800 px-5 py-2.5 font-semibold text-white hover:bg-amber-900">
             + Create Category
         </a>
@@ -32,10 +33,12 @@
                     <strong>Products:</strong> <span th:text="${productCounts[category.uniqueId]}">0</span>
                 </p>
 
-                <div class="flex gap-2">
-                    <a th:href="@{/categories/{id}/edit(id=${category.uniqueId})}"
+                <div class="flex flex-wrap gap-2">
+                    <a th:href="@{/categories/{id}(id=${category.uniqueId})}"
+                       class="flex-1 rounded-md border border-amber-300 px-3 py-2 text-center text-sm font-semibold text-amber-900 hover:bg-amber-100">View</a>
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/categories/{id}/edit(id=${category.uniqueId})}"
                        class="flex-1 rounded-md bg-amber-700 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-amber-800">Edit</a>
-                    <a th:href="@{/categories/{id}/delete(id=${category.uniqueId})}"
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/categories/{id}/delete(id=${category.uniqueId})}"
                        onclick="return confirm('Are you sure?')"
                        class="flex-1 rounded-md bg-red-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-red-700">Delete</a>
                 </div>
@@ -61,9 +64,11 @@
                         <td class="px-4 py-3" th:text="${productCounts[category.uniqueId]}">0</td>
                         <td class="px-4 py-3">
                             <div class="flex justify-end gap-2">
-                                <a th:href="@{/categories/{id}/edit(id=${category.uniqueId})}"
+                                <a th:href="@{/categories/{id}(id=${category.uniqueId})}"
+                                   class="rounded-md border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-900 hover:bg-amber-100">View</a>
+                                <a sec:authorize="hasRole('ADMIN')" th:href="@{/categories/{id}/edit(id=${category.uniqueId})}"
                                    class="rounded-md bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800">Edit</a>
-                                <a th:href="@{/categories/{id}/delete(id=${category.uniqueId})}"
+                                <a sec:authorize="hasRole('ADMIN')" th:href="@{/categories/{id}/delete(id=${category.uniqueId})}"
                                    onclick="return confirm('Are you sure?')"
                                    class="rounded-md bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700">Delete</a>
                             </div>
@@ -79,7 +84,7 @@
         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-2xl">📭</div>
         <h2 class="mb-2 text-2xl font-bold text-amber-900">No Categories Yet</h2>
         <p class="mb-5 text-sm text-gray-600">Create your first category to get started.</p>
-        <a href="/categories/new"
+        <a sec:authorize="hasRole('ADMIN')" href="/categories/new"
            class="inline-flex items-center justify-center rounded-lg bg-amber-800 px-5 py-2.5 font-semibold text-white hover:bg-amber-900">
             Create First Category
         </a>
